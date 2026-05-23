@@ -1,0 +1,2 @@
+Video steganography lab using simplified Differential Energy Watermarking (DEW) on video DCT blocks.
+

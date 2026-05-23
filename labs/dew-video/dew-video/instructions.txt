@@ -1,0 +1,8 @@
+Use this machine to create the cover video, embed a DEW watermark, extract it, and measure PSNR.
+
+Commands:
+  python make_cover.py
+  python dew_embed.py --in cover.dwv --out watermarked.dwv --message "LABTAINERS-DEW-2026" --key 4242
+  python dew_extract.py --in watermarked.dwv --length 19 --key 4242
+  python quality.py --ref cover.dwv --test watermarked.dwv
+  scp watermarked.dwv ubuntu@tester:/home/ubuntu/

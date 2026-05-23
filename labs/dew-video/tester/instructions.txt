@@ -1,0 +1,7 @@
+Use this machine to test the watermarked video copied from analyst.
+
+Expected file:
+  /home/ubuntu/watermarked.dwv
+
+Run:
+  ./run_tests.sh watermarked.dwv 19 4242
