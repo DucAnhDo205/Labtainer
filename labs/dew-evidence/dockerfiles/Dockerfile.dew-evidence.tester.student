@@ -1,5 +1,4 @@
-ARG registry
-FROM ${registry}/labtainer.network.ssh
+FROM labtainer.network.ssh
 
 ARG lab
 ARG labdir
