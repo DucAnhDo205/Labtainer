@@ -9,4 +9,5 @@ ARG version
 LABEL version=$version
 
 ADD $labdir/$lab.tar.gz /home/$user_name
+RUN echo "$user_name:$password" | chpasswd
 RUN chmod +x /home/$user_name/run_tests.sh || true
