@@ -1,0 +1,9 @@
+Use this machine to create the audit cover video, embed a DEW trace, extract it, and measure PSNR.
+
+Commands:
+  python make_cover.py
+  python dew_embed.py --in cover.dwv --out watermarked.dwv --message "DEW-AUDIT-TRACE26" --key 9107
+  python dew_extract.py --in watermarked.dwv --length 17 --key 9107
+  python quality.py --ref cover.dwv --test watermarked.dwv
+  python submit_dew.py
+  scp watermarked.dwv ubuntu@verifier:/home/ubuntu/

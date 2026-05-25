@@ -1,0 +1,7 @@
+Use this machine to verify the audit-traced video copied from audit.
+
+Expected file:
+  /home/ubuntu/watermarked.dwv
+
+Run:
+  ./run_tests.sh watermarked.dwv 17 9107

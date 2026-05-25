@@ -1,0 +1,13 @@
+ARG registry
+FROM ${registry}/labtainer.network.ssh
+
+ARG lab
+ARG labdir
+ARG imagedir
+ARG user_name
+ARG password
+ARG version
+LABEL version=$version
+
+ADD $labdir/$lab.tar.gz /home/$user_name
+RUN chmod +x /home/$user_name/run_tests.sh || true
