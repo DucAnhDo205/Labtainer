@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+exec > >(tee run_tests.stdout)
+exec 2>&1
+
 VIDEO="${1:-watermarked.dwv}"
 LEN="${2:-18}"
 KEY="${3:-4242}"

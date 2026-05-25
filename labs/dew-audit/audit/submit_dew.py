@@ -28,23 +28,36 @@ def psnr(ref_path, test_path):
 
 
 def main():
+    lines = []
+
+    def emit(text):
+        lines.append(text)
+        print(text)
+
+    def write_stdout():
+        with open("submit_dew.stdout", "w") as out:
+            out.write("\n".join(lines))
+            out.write("\n")
+
     if not os.path.exists("cover.dwv"):
-        print("COVER_OK=N")
-        print("ERROR=cover.dwv missing; run python make_cover.py")
+        emit("COVER_OK=N")
+        emit("ERROR=cover.dwv missing; run python make_cover.py")
+        write_stdout()
         return
 
-    print("COVER_OK=Y")
+    emit("COVER_OK=Y")
     bits = embed_video("cover.dwv", "watermarked.dwv", MESSAGE, KEY)
-    print("EMBED_BITS=%d" % bits)
+    emit("EMBED_BITS=%d" % bits)
 
     extracted = extract_video("watermarked.dwv", LENGTH, KEY)
-    print("EXTRACTED=%s" % extracted)
-    print("EXTRACT_OK=%s" % ("Y" if extracted == MESSAGE else "N"))
+    emit("EXTRACTED=%s" % extracted)
+    emit("EXTRACT_OK=%s" % ("Y" if extracted == MESSAGE else "N"))
 
     score = psnr("cover.dwv", "watermarked.dwv")
-    print("PSNR_DB=%.2f" % score)
-    print("PSNR_OK=%s" % ("Y" if score >= 30.0 else "N"))
-    print("OUTPUT_FILE=watermarked.dwv")
+    emit("PSNR_DB=%.2f" % score)
+    emit("PSNR_OK=%s" % ("Y" if score >= 30.0 else "N"))
+    emit("OUTPUT_FILE=watermarked.dwv")
+    write_stdout()
 
 
 if __name__ == "__main__":
