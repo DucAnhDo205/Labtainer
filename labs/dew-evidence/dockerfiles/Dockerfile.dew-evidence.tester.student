@@ -8,6 +8,8 @@ ARG password=ubuntu
 ARG version
 LABEL version=$version
 
+RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
 ADD $labdir/$lab.tar.gz /home/$user_name
-RUN echo "$user_name:${password:-ubuntu}" | chpasswd
-RUN chmod +x /home/$user_name/run_tests.sh || true
+RUN usermod -p "$(openssl passwd -1 "${password:-ubuntu}")" "$user_name" && \
+    chown -R "$user_name:$user_name" /home/$user_name && \
+    chmod +x /home/$user_name/run_tests.sh || true
