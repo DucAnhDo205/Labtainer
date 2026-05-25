@@ -1,0 +1,3 @@
+Open the lab manual in LAB DOCS.
+
+You will use the demo machine to seal a synthetic evidence video using simplified Differential Energy Watermarking (DEW). Then you will copy the watermarked video to the tester machine for validation and compression-like attack tests.

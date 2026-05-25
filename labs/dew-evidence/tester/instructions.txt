@@ -1,0 +1,7 @@
+Use this machine to test the sealed evidence video copied from demo.
+
+Expected file:
+  /home/ubuntu/watermarked.dwv
+
+Run:
+  ./run_tests.sh watermarked.dwv 17 7301

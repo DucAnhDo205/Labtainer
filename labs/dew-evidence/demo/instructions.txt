@@ -1,0 +1,9 @@
+Use this machine to create the evidence cover video, embed a DEW seal, extract it, and measure PSNR.
+
+Commands:
+  python make_cover.py
+  python dew_embed.py --in cover.dwv --out watermarked.dwv --message "DEW-EVIDENCE-2026" --key 7301
+  python dew_extract.py --in watermarked.dwv --length 17 --key 7301
+  python quality.py --ref cover.dwv --test watermarked.dwv
+  python submit_dew.py
+  scp watermarked.dwv ubuntu@tester:/home/ubuntu/

@@ -1,0 +1,1 @@
+Evidence video sealing lab using simplified Differential Energy Watermarking (DEW) on grayscale video DCT blocks.
