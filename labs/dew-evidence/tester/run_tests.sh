@@ -25,8 +25,16 @@ ATTACKED="$(python dew_extract.py --in attacked.dwv --length "$LEN" --key "$KEY"
 echo "$ATTACKED"
 if [ "$ATTACKED" = "DEW-EVIDENCE-2026" ]; then
     echo "VERIFY_ATTACKED=Y"
+    ATTACKED_OK=Y
 else
     echo "VERIFY_ATTACKED=N"
+    ATTACKED_OK=N
+fi
+
+if [ "$ORIGINAL" = "DEW-EVIDENCE-2026" ] && [ "$ATTACKED_OK" = "Y" ]; then
+    echo "COMPLETE=Y" > dew_complete.status
+else
+    echo "COMPLETE=N" > dew_complete.status
 fi
 
 echo "[done]"
