@@ -7,6 +7,7 @@ ARG user_name=ubuntu
 ARG password=ubuntu
 ARG version
 LABEL version=$version
+ENV HOME=/home/ubuntu
 
 RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
 ADD $labdir/$lab.tar.gz /home/$user_name
