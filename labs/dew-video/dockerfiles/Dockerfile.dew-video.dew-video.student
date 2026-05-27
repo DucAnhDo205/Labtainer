@@ -1,5 +1,4 @@
-ARG registry
-FROM ${registry}/labtainer.network.ssh
+FROM labtainer.network.ssh
 
 ARG lab
 ARG labdir
@@ -13,8 +12,7 @@ RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
 ADD $labdir/$lab.tar.gz /home/$user_name
 RUN cp /home/$user_name/Student.py /home/$user_name/.local/bin/Student.py
 RUN echo "dew-video_2026_master_seed" > /home/$user_name/.local/.seed && \
-    echo "dew-video_2026_master_seed" > /home/$user_name/.local/.watermark && \
-    echo "127.0.1.1 dew-video" >> /etc/hosts
+    echo "dew-video_2026_master_seed" > /home/$user_name/.local/.watermark
 RUN usermod -p "$(openssl passwd -1 "$password")" "$user_name" && \
     chmod +x /home/$user_name/.local/bin/Student.py && \
     chown -R "$user_name:$user_name" /home/$user_name

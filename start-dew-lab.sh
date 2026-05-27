@@ -100,22 +100,17 @@ case "$LAB" in
         ;;
 esac
 
-missing_image=0
-for image in "${IMAGES[@]}"; do
-    if ! docker image inspect "$image" >/dev/null 2>&1; then
-        missing_image=1
-        break
-    fi
-done
-
 cd "$STUDENT_DIR"
 
-if [ "$missing_image" -eq 1 ]; then
-    echo "[2/5] Local images are missing; building $LAB images once"
-    ./bin/rebuild -L -f -b "$LAB"
-else
-    echo "[2/5] Local images already exist"
+if ! docker image inspect labtainer.network.ssh >/dev/null 2>&1; then
+    if docker image inspect labtainers/labtainer.network.ssh >/dev/null 2>&1; then
+        echo "      Creating local base-image alias labtainer.network.ssh"
+        docker tag labtainers/labtainer.network.ssh labtainer.network.ssh
+    fi
 fi
+
+echo "[2/5] Building local $LAB images from the synced lab files"
+./bin/rebuild -L -f -b "$LAB"
 
 echo "[3/5] Removing stale $LAB containers"
 docker rm -f "${CONTAINERS[@]}" >/dev/null 2>&1 || true
@@ -126,3 +121,16 @@ docker network rm local-net >/dev/null 2>&1 || true
 echo "[5/5] Starting $LAB"
 export DISPLAY="${DISPLAY:-:0}"
 ./bin/labtainer -q -r "$LAB"
+
+for container in "${CONTAINERS[@]}"; do
+    case "$container" in
+        *-igrader)
+            continue
+            ;;
+    esac
+    if docker ps --format '{{.Names}}' | grep -qx "$container"; then
+        hostname="$(docker exec "$container" hostname | tr -d '\r')"
+        docker exec -u root "$container" bash --noprofile --norc -lc \
+            "grep -q \" $hostname\" /etc/hosts || echo \"127.0.1.1 $hostname\" >> /etc/hosts" >/dev/null 2>&1 || true
+    fi
+done
