@@ -18,33 +18,23 @@ Scenario: a field analyst has a short grayscale evidence clip. The analyst must 
 
 ## Before starting the lab
 
-If this lab is being copied to a new Labtainer VM, build the local Docker images before starting the lab. This avoids a Docker Hub lookup when the VM is offline or cannot reach Docker Hub.
+If this lab is being copied to a new Labtainer VM, use the repository start script. It syncs the lab files, builds missing local Docker images, removes stale DEW containers/networks, and starts the lab. You do not need to run `rebuild` manually.
 
-From the Labtainer student directory, run:
-
-```bash
-cd ~/labtainer/labtainer-student
-rebuild -L -f -b dew-evidence
-labtainer -r dew-evidence
-```
-
-If your Labtainer install uses the trunk path, use:
+From the repository root, run only these two commands:
 
 ```bash
-cd ~/labtainer/trunk/scripts/labtainer-student
-./bin/rebuild -L -f -b dew-evidence
-./bin/labtainer -r dew-evidence
+git pull
+bash start-dew-lab.sh dew-evidence
 ```
 
-If `labtainer -r dew-evidence` reports `Unable to reach Dockerhub` or `Could not find image info`, the DEW evidence images have not been built locally yet. Run the `rebuild -L -f -b dew-evidence` command above, then start the lab again.
-
-If Docker reports that `local-net` already exists with the wrong subnet, stop old DEW containers and remove the stale network:
+If your Labtainer installation is not under `~/labtainer/labtainer-student` or `~/labtainer/trunk/scripts/labtainer-student`, set `LABTAINER_STUDENT_DIR` once in the same shell:
 
 ```bash
-docker rm -f dew-evidence.demo.student dew-evidence.tester.student dew-evidence-igrader 2>/dev/null || true
-docker network rm local-net 2>/dev/null || true
-labtainer -r dew-evidence
+export LABTAINER_STUDENT_DIR=/path/to/labtainer-student
+bash start-dew-lab.sh dew-evidence
 ```
+
+The script prevents the common `Unable to reach Dockerhub` / `Could not find image info` error by building the required local images before `labtainer -r` is called.
 
 ## Tasks
 
