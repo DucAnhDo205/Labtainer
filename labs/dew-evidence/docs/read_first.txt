@@ -1,3 +1,11 @@
 Open the lab manual in LAB DOCS.
 
+If this lab was just copied to a new VM, first build the local images:
+
+cd ~/labtainer/labtainer-student
+rebuild -L -f -b dew-evidence
+labtainer -r dew-evidence
+
+Use ~/labtainer/trunk/scripts/labtainer-student and ./bin/rebuild if your installation uses the trunk directory.
+
 You will use the demo machine to seal a synthetic evidence video using simplified Differential Energy Watermarking (DEW). Then you will copy the watermarked video to the tester machine for validation and compression-like attack tests.

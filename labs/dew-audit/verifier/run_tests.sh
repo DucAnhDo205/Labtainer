@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-exec > >(tee run_tests.stdout)
+exec > >(tee run_tests.stdout run_tests.sh.stdout)
 exec 2>&1
 
 VIDEO="${1:-watermarked.dwv}"

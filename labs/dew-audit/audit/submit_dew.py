@@ -35,9 +35,10 @@ def main():
         print(text)
 
     def write_stdout():
-        with open("submit_dew.stdout", "w") as out:
-            out.write("\n".join(lines))
-            out.write("\n")
+        text = "\n".join(lines) + "\n"
+        for name in ("submit_dew.stdout", "submit_dew.py.stdout"):
+            with open(name, "w") as out:
+                out.write(text)
 
     if not os.path.exists("cover.dwv"):
         emit("COVER_OK=N")

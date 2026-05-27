@@ -5,8 +5,8 @@ import os
 from dew_core import embed_video, extract_video, read_video
 
 
-MESSAGE = "DEW-EVIDENCE-2026"
-KEY = 7301
+MESSAGE = "LABTAINERS-DEW-2026"
+KEY = 4242
 LENGTH = len(MESSAGE)
 
 

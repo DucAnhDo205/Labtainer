@@ -30,6 +30,36 @@ DEW hides a bit by changing the relative energy of two coefficient groups. In th
 
 The lab uses a simple `.dwv` educational video format so it can run on the Labtainer base image without OpenCV, FFmpeg, NumPy, or apt package installation.
 
+## Before starting the lab
+
+If this lab is being copied to a new Labtainer VM, build the local Docker images before starting the lab. This avoids a Docker Hub lookup when the VM is offline or cannot reach Docker Hub.
+
+From the Labtainer student directory, run:
+
+```bash
+cd ~/labtainer/labtainer-student
+rebuild -L -f -b dew-audit
+labtainer -r dew-audit
+```
+
+If your Labtainer install uses the trunk path, use:
+
+```bash
+cd ~/labtainer/trunk/scripts/labtainer-student
+./bin/rebuild -L -f -b dew-audit
+./bin/labtainer -r dew-audit
+```
+
+If `labtainer -r dew-audit` reports `Unable to reach Dockerhub` or `Could not find image info for audit`, the audit images have not been built locally yet. Run the `rebuild -L -f -b dew-audit` command above, then start the lab again.
+
+If Docker reports that `local-net` already exists with the wrong subnet, stop old DEW containers and remove the stale network:
+
+```bash
+docker rm -f dew-audit.audit.student dew-audit.verifier.student dew-audit-igrader 2>/dev/null || true
+docker network rm local-net 2>/dev/null || true
+labtainer -r dew-audit
+```
+
 ## Tasks
 
 ### Task 1: Create the cover video

@@ -14,6 +14,36 @@ DEW hides a bit by changing the relative energy of two coefficient groups. In th
 
 This lab is intentionally simplified. Real DEW for compressed JPEG/MPEG streams works closer to the codec coefficient domain. The simplified version is easier to inspect and suitable for a Labtainer exercise.
 
+## Before starting the lab
+
+If this lab is being copied to a new Labtainer VM, build the local Docker images before starting the lab. This avoids a Docker Hub lookup when the VM is offline or cannot reach Docker Hub.
+
+From the Labtainer student directory, run:
+
+```bash
+cd ~/labtainer/labtainer-student
+rebuild -L -f -b dew-video
+labtainer -r dew-video
+```
+
+If your Labtainer install uses the trunk path, use:
+
+```bash
+cd ~/labtainer/trunk/scripts/labtainer-student
+./bin/rebuild -L -f -b dew-video
+./bin/labtainer -r dew-video
+```
+
+If `labtainer -r dew-video` reports `Unable to reach Dockerhub` or `Could not find image info`, the DEW video images have not been built locally yet. Run the `rebuild -L -f -b dew-video` command above, then start the lab again.
+
+If Docker reports that `local-net` already exists with the wrong subnet, stop old DEW containers and remove the stale network:
+
+```bash
+docker rm -f dew-video.dew-video.student dew-video.tester.student dew-video-igrader 2>/dev/null || true
+docker network rm local-net 2>/dev/null || true
+labtainer -r dew-video
+```
+
 ## Tasks
 
 ### Task 1: Create the cover video
@@ -63,6 +93,36 @@ On `tester`:
 ```
 
 Record whether the original and re-encoded videos can still be decoded.
+
+### Task 6: Prepare checkwork artifacts
+
+On `dew-video`, run:
+
+```bash
+python submit_dew.py
+```
+
+The output must include:
+
+```text
+COVER_OK=Y
+EMBED_BITS=152
+EXTRACT_OK=Y
+PSNR_OK=Y
+```
+
+On `tester`, `run_tests.sh` must include:
+
+```text
+VERIFY_ORIGINAL=Y
+VERIFY_ATTACKED=Y
+```
+
+Then run:
+
+```bash
+checkwork dew-video
+```
 
 ## Questions
 

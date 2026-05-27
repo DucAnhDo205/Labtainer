@@ -16,6 +16,36 @@ This lab is intentionally simplified. Real DEW for compressed JPEG/MPEG streams 
 
 Scenario: a field analyst has a short grayscale evidence clip. The analyst must embed the seal `DEW-EVIDENCE-2026` with key `7301`, verify that it can be extracted blindly, and prove that the visible distortion stays below the PSNR limit.
 
+## Before starting the lab
+
+If this lab is being copied to a new Labtainer VM, build the local Docker images before starting the lab. This avoids a Docker Hub lookup when the VM is offline or cannot reach Docker Hub.
+
+From the Labtainer student directory, run:
+
+```bash
+cd ~/labtainer/labtainer-student
+rebuild -L -f -b dew-evidence
+labtainer -r dew-evidence
+```
+
+If your Labtainer install uses the trunk path, use:
+
+```bash
+cd ~/labtainer/trunk/scripts/labtainer-student
+./bin/rebuild -L -f -b dew-evidence
+./bin/labtainer -r dew-evidence
+```
+
+If `labtainer -r dew-evidence` reports `Unable to reach Dockerhub` or `Could not find image info`, the DEW evidence images have not been built locally yet. Run the `rebuild -L -f -b dew-evidence` command above, then start the lab again.
+
+If Docker reports that `local-net` already exists with the wrong subnet, stop old DEW containers and remove the stale network:
+
+```bash
+docker rm -f dew-evidence.demo.student dew-evidence.tester.student dew-evidence-igrader 2>/dev/null || true
+docker network rm local-net 2>/dev/null || true
+labtainer -r dew-evidence
+```
+
 ## Tasks
 
 ### Task 1: Create the cover video
