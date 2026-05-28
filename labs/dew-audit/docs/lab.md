@@ -32,23 +32,14 @@ The lab uses a simple `.dwv` educational video format so it can run on the Labta
 
 ## Before starting the lab
 
-If this lab is being copied to a new Labtainer VM, use the repository start script. It syncs the lab files, builds missing local Docker images, removes stale DEW containers/networks, and starts the lab. You do not need to run `rebuild` manually.
-
-From the repository root, run only these two commands:
+Import the IModule, then start the lab:
 
 ```bash
-git pull
-bash start-dew-lab.sh dew-audit
+imodule https://raw.githubusercontent.com/DucAnhDo205/Labtainer/main/dew-audit-labtainer.tar.gz
+labtainer -r dew-audit
 ```
 
-If your Labtainer installation is not under `~/labtainer/labtainer-student` or `~/labtainer/trunk/scripts/labtainer-student`, set `LABTAINER_STUDENT_DIR` once in the same shell:
-
-```bash
-export LABTAINER_STUDENT_DIR=/path/to/labtainer-student
-bash start-dew-lab.sh dew-audit
-```
-
-The script prevents the common `Unable to reach Dockerhub` / `Could not find image info` error by building the required local images before `labtainer -r` is called.
+The lab uses a prebuilt Labtainer-compatible Ubuntu runtime image and mounts the DEW exercise files at start time, so a new Labtainer VM does not need any manual Docker image tagging, local rebuild step, or separate repository start script.
 
 ## Tasks
 
