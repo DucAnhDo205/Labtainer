@@ -6,8 +6,21 @@ import sys
 import zipfile
 
 
+DEFAULT_LAB_NAME = "dew-evidence"
+
+
 def skip_path(path):
     return ".cache" in path or "__pycache__" in path or path.startswith(".local/zip")
+
+
+def read_first_existing(paths, default):
+    for path in paths:
+        if os.path.isfile(path):
+            with open(path) as fh:
+                value = fh.read().strip()
+            if value:
+                return value
+    return default
 
 
 def main():
@@ -15,15 +28,15 @@ def main():
     home = os.path.join("/home", user_name)
     local = os.path.join(home, ".local")
     zip_dir = os.path.join(local, "zip")
-    student_id = "student"
-    lab_name = "dew-evidence"
 
-    email_path = os.path.join(local, ".email")
-    lab_path = os.path.join(local, ".labname")
-    if os.path.isfile(email_path):
-        student_id = open(email_path).read().strip() or student_id
-    if os.path.isfile(lab_path):
-        lab_name = open(lab_path).read().strip() or lab_name
+    student_id = read_first_existing(
+        [os.path.join(local, ".email"), os.path.join("/root", ".local", ".email")],
+        "student",
+    )
+    lab_name = read_first_existing(
+        [os.path.join(local, ".labname"), os.path.join("/root", ".local", ".labname")],
+        DEFAULT_LAB_NAME,
+    )
 
     if not os.path.isdir(zip_dir):
         os.makedirs(zip_dir)
@@ -52,6 +65,7 @@ def main():
                     pass
 
     os.rename(tmp_path, final_path)
+    os.chmod(final_path, 0o666)
     print("Created %s" % final_path)
     return 0
 
