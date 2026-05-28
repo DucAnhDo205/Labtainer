@@ -7,9 +7,6 @@ exec 2>&1
 VIDEO="${1:-watermarked.dwv}"
 LEN="${2:-17}"
 KEY="${3:-7301}"
-if [ ! -f "$VIDEO" ] && [ -f "/dew-xfer/$VIDEO" ]; then
-    cp "/dew-xfer/$VIDEO" "$VIDEO"
-fi
 
 echo "[1] Extracting original"
 ORIGINAL="$(python dew_extract.py --in "$VIDEO" --length "$LEN" --key "$KEY")"

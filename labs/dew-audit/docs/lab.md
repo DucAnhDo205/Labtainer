@@ -39,7 +39,7 @@ imodule https://raw.githubusercontent.com/DucAnhDo205/Labtainer/main/dew-audit-l
 labtainer -r dew-audit
 ```
 
-The lab uses a prebuilt Labtainer-compatible Ubuntu runtime image and mounts the DEW exercise files at start time, so a new Labtainer VM does not need any manual Docker image tagging, local rebuild step, or separate repository start script.
+The lab uses its own DEW Labtainer images and does not depend on unrelated lab images.
 
 ## Tasks
 
