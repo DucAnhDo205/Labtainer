@@ -3,19 +3,22 @@ FROM labtainer.network.ssh
 ARG lab
 ARG labdir
 ARG imagedir
-ARG user_name
-ARG password
+ARG user_name=ubuntu
+ARG password=ubuntu
 ARG version
 LABEL version=$version
 LABEL base=labtainers/labtainer.network.ssh.38ac783a2b8e
+ENV HOME=/home/ubuntu
 
 RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
 ADD $labdir/$lab.tar.gz /home/$user_name
 RUN cp /home/$user_name/Student.py /home/$user_name/.local/bin/Student.py
 RUN echo "dew-video_2026_master_seed" > /home/$user_name/.local/.seed && \
     echo "dew-video_2026_master_seed" > /home/$user_name/.local/.watermark
-RUN usermod -p "$(openssl passwd -1 "$password")" "$user_name" && \
+RUN usermod -p "$(openssl passwd -1 "${password:-ubuntu}")" "$user_name" && \
     chmod +x /home/$user_name/.local/bin/Student.py && \
+    mkdir -p /run/sshd && \
+    grep -q '^PasswordAuthentication' /etc/ssh/sshd_config && sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config || echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && \
     chown -R "$user_name:$user_name" /home/$user_name && \
     chmod +x /home/$user_name/run_tests.sh || true
 USER root

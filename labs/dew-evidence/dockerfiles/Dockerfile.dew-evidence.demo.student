@@ -15,5 +15,10 @@ ADD $labdir/$lab.tar.gz /home/$user_name
 RUN cp /home/$user_name/Student.py /home/$user_name/.local/bin/Student.py
 RUN usermod -p "$(openssl passwd -1 "${password:-ubuntu}")" "$user_name" && \
     chmod +x /home/$user_name/.local/bin/Student.py && \
+    mkdir -p /run/sshd /home/$user_name/.ssh && \
+    printf "Host tester\n    StrictHostKeyChecking no\n    UserKnownHostsFile /dev/null\n" > /home/$user_name/.ssh/config && \
+    chmod 700 /home/$user_name/.ssh && \
+    chmod 600 /home/$user_name/.ssh/config && \
+    grep -q '^PasswordAuthentication' /etc/ssh/sshd_config && sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config || echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && \
     chown -R "$user_name:$user_name" /home/$user_name
 USER root

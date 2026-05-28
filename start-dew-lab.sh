@@ -102,6 +102,9 @@ esac
 
 cd "$STUDENT_DIR"
 
+echo "[setup] Ensuring Labtainer grader image is available for checkwork"
+docker pull labtainers/labtainer.grader >/dev/null
+
 if ! docker image inspect labtainer.network.ssh >/dev/null 2>&1; then
     if docker image inspect labtainers/labtainer.network.ssh >/dev/null 2>&1; then
         echo "      Creating local base-image alias labtainer.network.ssh"
