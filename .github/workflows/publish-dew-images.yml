@@ -32,6 +32,9 @@ jobs:
         run: |
           set -euo pipefail
 
+          docker pull "${LABTAINER_BASE}:latest"
+          docker tag "${LABTAINER_BASE}:latest" labtainer.network.ssh:latest
+
           build_image() {
             local lab="$1"
             local container="$2"
@@ -55,7 +58,7 @@ jobs:
               --exclude "${image}.tar.gz" \
               .
 
-            docker build \
+            docker build --progress=plain \
               --build-arg lab="${image}" \
               --build-arg labdir="." \
               --build-arg imagedir="." \
