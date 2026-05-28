@@ -27,13 +27,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push DEW images
+      - name: Prepare Labtainer base image
         shell: bash
         run: |
           set -euo pipefail
 
+          echo "Pulling ${LABTAINER_BASE}:latest"
           docker pull "${LABTAINER_BASE}:latest"
           docker tag "${LABTAINER_BASE}:latest" labtainer.network.ssh:latest
+          docker image inspect labtainer.network.ssh:latest --format 'Base image ready: {{.Id}}'
+
+      - name: Build DEW images
+        shell: bash
+        run: |
+          set -euo pipefail
 
           build_image() {
             local lab="$1"
@@ -58,6 +65,7 @@ jobs:
               --exclude "${image}.tar.gz" \
               .
 
+            echo "Building ${DOCKERHUB_NAMESPACE}/${image}:latest"
             docker build --progress=plain \
               --build-arg lab="${image}" \
               --build-arg labdir="." \
@@ -69,7 +77,6 @@ jobs:
               -t "${DOCKERHUB_NAMESPACE}/${image}:latest" \
               "${work}"
 
-            docker push "${DOCKERHUB_NAMESPACE}/${image}:latest"
             rm -rf "${work}"
           }
 
@@ -79,3 +86,22 @@ jobs:
           build_image dew-audit verifier
           build_image dew-evidence demo
           build_image dew-evidence tester
+
+      - name: Push DEW images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          images=(
+            dew-video.dew-video.student
+            dew-video.tester.student
+            dew-audit.audit.student
+            dew-audit.verifier.student
+            dew-evidence.demo.student
+            dew-evidence.tester.student
+          )
+
+          for image in "${images[@]}"; do
+            echo "Pushing ${DOCKERHUB_NAMESPACE}/${image}:latest"
+            docker push "${DOCKERHUB_NAMESPACE}/${image}:latest"
+          done
