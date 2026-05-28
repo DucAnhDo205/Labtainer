@@ -7,6 +7,7 @@ ARG user_name
 ARG password
 ARG version
 LABEL version=$version
+LABEL base=labtainers/labtainer.network.ssh.38ac783a2b8e
 
 RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
 ADD $labdir/$lab.tar.gz /home/$user_name

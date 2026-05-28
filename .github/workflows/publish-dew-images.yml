@@ -1,0 +1,78 @@
+name: Publish DEW Labtainer images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "labs/dew-video/**"
+      - "labs/dew-audit/**"
+      - "labs/dew-evidence/**"
+      - ".github/workflows/publish-dew-images.yml"
+
+env:
+  DOCKERHUB_NAMESPACE: doanhduc536
+  LABTAINER_BASE: labtainers/labtainer.network.ssh
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push DEW images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          build_image() {
+            local lab="$1"
+            local container="$2"
+            local user_name="${3:-ubuntu}"
+            local password="${4:-ubuntu}"
+            local image="${lab}.${container}.student"
+            local work
+            work="$(mktemp -d)"
+
+            cp "labs/${lab}/dockerfiles/Dockerfile.${image}" "${work}/Dockerfile"
+            cp -a "labs/${lab}/${container}/." "${work}/"
+            mkdir -p "${work}/.local/bin" "${work}/.local/config" "${work}/.local/result"
+            cp -a "labs/${lab}/config/." "${work}/.local/config/"
+            cp -a "labs/${lab}/bin/." "${work}/.local/bin/" 2>/dev/null || true
+            chmod +x "${work}/.local/bin/"* 2>/dev/null || true
+            touch "${work}/.local/sys_manifest.list"
+            rm -f "${work}/${image}.tar.gz" "${work}/sys_${image}.tar.gz"
+            rm -rf "${work}/home_tar" "${work}/sys_tar" "${work}/_bin" "${work}/_system"
+            tar -czf "${work}/${image}.tar.gz" -C "${work}" \
+              --exclude Dockerfile \
+              --exclude "${image}.tar.gz" \
+              .
+
+            docker build \
+              --build-arg lab="${image}" \
+              --build-arg labdir="." \
+              --build-arg imagedir="." \
+              --build-arg user_name="${user_name}" \
+              --build-arg password="${password}" \
+              --build-arg registry="labtainers" \
+              --build-arg version="3" \
+              -t "${DOCKERHUB_NAMESPACE}/${image}:latest" \
+              "${work}"
+
+            docker push "${DOCKERHUB_NAMESPACE}/${image}:latest"
+            rm -rf "${work}"
+          }
+
+          build_image dew-video dew-video
+          build_image dew-video tester
+          build_image dew-audit audit
+          build_image dew-audit verifier
+          build_image dew-evidence demo
+          build_image dew-evidence tester

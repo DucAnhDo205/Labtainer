@@ -7,6 +7,7 @@ ARG user_name=ubuntu
 ARG password=ubuntu
 ARG version
 LABEL version=$version
+LABEL base=labtainers/labtainer.network.ssh.38ac783a2b8e
 ENV HOME=/home/ubuntu
 
 RUN id "$user_name" >/dev/null 2>&1 || useradd -m -s /bin/bash "$user_name"
