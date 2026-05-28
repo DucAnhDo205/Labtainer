@@ -17,3 +17,4 @@ RUN echo "dew_audit_2026_master_seed" > /home/$user_name/.local/.seed && \
 RUN usermod -p "$(openssl passwd -1 "$password")" "$user_name" && \
     chmod +x /home/$user_name/.local/bin/Student.py && \
     chown -R "$user_name:$user_name" /home/$user_name
+USER $user_name

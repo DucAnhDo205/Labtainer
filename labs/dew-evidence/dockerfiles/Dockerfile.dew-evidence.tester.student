@@ -17,3 +17,4 @@ RUN usermod -p "$(openssl passwd -1 "${password:-ubuntu}")" "$user_name" && \
     chmod +x /home/$user_name/.local/bin/Student.py && \
     chown -R "$user_name:$user_name" /home/$user_name && \
     chmod +x /home/$user_name/run_tests.sh || true
+USER $user_name
