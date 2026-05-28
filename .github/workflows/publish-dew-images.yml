@@ -40,7 +40,8 @@ jobs:
       - name: Build DEW images
         shell: bash
         run: |
-          set -euo pipefail
+          set -Eeuxo pipefail
+          trap 'echo "::error::Build failed at line ${LINENO}: ${BASH_COMMAND}"' ERR
 
           build_image() {
             local lab="$1"
@@ -51,6 +52,10 @@ jobs:
             local work
             work="$(mktemp -d)"
 
+            echo "Preparing build context for ${image} in ${work}"
+            test -f "labs/${lab}/dockerfiles/Dockerfile.${image}"
+            test -d "labs/${lab}/${container}"
+            test -d "labs/${lab}/config"
             cp "labs/${lab}/dockerfiles/Dockerfile.${image}" "${work}/Dockerfile"
             cp -a "labs/${lab}/${container}/." "${work}/"
             mkdir -p "${work}/.local/bin" "${work}/.local/config" "${work}/.local/result"
