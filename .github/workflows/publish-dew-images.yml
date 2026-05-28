@@ -50,7 +50,9 @@ jobs:
             local password="${4:-ubuntu}"
             local image="${lab}.${container}.student"
             local work
+            local payload
             work="$(mktemp -d)"
+            payload="${work}.tar.gz"
 
             echo "Preparing build context for ${image} in ${work}"
             test -f "labs/${lab}/dockerfiles/Dockerfile.${image}"
@@ -65,10 +67,10 @@ jobs:
             touch "${work}/.local/sys_manifest.list"
             rm -f "${work}/${image}.tar.gz" "${work}/sys_${image}.tar.gz"
             rm -rf "${work}/home_tar" "${work}/sys_tar" "${work}/_bin" "${work}/_system"
-            tar -czf "${work}/${image}.tar.gz" -C "${work}" \
+            tar -czf "${payload}" -C "${work}" \
               --exclude Dockerfile \
-              --exclude "${image}.tar.gz" \
               .
+            mv "${payload}" "${work}/${image}.tar.gz"
 
             echo "Building ${DOCKERHUB_NAMESPACE}/${image}:latest"
             docker build --progress=plain \
@@ -82,7 +84,7 @@ jobs:
               -t "${DOCKERHUB_NAMESPACE}/${image}:latest" \
               "${work}"
 
-            rm -rf "${work}"
+            rm -rf "${work}" "${payload}"
           }
 
           build_image dew-video dew-video
