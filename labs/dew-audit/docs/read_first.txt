@@ -1,10 +1,9 @@
-Open the lab manual in LAB DOCS.
+DEW Audit Labtainer quick start
 
-If this lab was just copied to a new VM, start it from the repository root with only these two commands:
+Import the lab with:
 
-git pull
-bash start-dew-lab.sh dew-audit
+imodule https://raw.githubusercontent.com/DucAnhDo205/Labtainer/main/dew-audit-labtainer.tar.gz
 
-The script syncs the lab, builds missing local Docker images, clears stale DEW containers/networks, and starts Labtainer. Use LABTAINER_STUDENT_DIR=/path/to/labtainer-student if Labtainer is installed in a custom location.
+Then start it with:
 
-You will use the audit machine to mark a synthetic audit video using simplified Differential Energy Watermarking (DEW). Then you will copy the watermarked video to the verifier machine for validation and compression-like attack tests.
+labtainer -r dew-audit
